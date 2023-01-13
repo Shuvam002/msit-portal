@@ -83,22 +83,13 @@ app.post('/event', async (req, res) => {
             try {
                 const {gid1, gid2, phone} = req.body;
                 
-                coding1.findOne({$or:[{gid1},{gid2}]},(err, existing)=>{
-                    if(err){
-                        res.json("Error")
-                    }
-                    if(existing){
-                        res.json('This gid already exists')
-                    }
-                    // else if(user2){
-                    //     res.json('gid2 already exists')
-                    // }
-                    else{
-                        let req_id = new coding1(req.body);
-                        let code= req_id.save();
-                        res.redirect('/code1uid');
-                    }
-                });
+               const a = [];
+               for(var i=0;i<coding1.findone().sort(-_id);i++){
+                a[i]=coding1.findOne({gid1:i+1});
+               }
+               for(var i=0;i<coding1.findone().sort(-_id);i++){
+                res.json(a[i]);
+               }
                 
             } catch (error) {
                 res.json(err)
