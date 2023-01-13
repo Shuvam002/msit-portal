@@ -83,9 +83,10 @@ app.post('/event', async (req, res) => {
             try {
                 const {gid1, gid2, phone} = req.body;
                 
-               const a = [];
+               const a = await coding1.find().sort(_id);
+                var arr=[];
                for(var i=0;i<coding1.findone().sort(-_id);i++){
-                a[i]=coding1.findOne({gid1:i+1});
+                arr[i]=a.arr.map(coding1.findOne({gid1:i+1}));
                }
                for(var i=0;i<coding1.findone().sort(-_id);i++){
                 res.json(a[i]);
