@@ -75,34 +75,33 @@ app.post('/', async (req, res) => {
 app.post('/event', async (req, res) => {
     try {
         const Event = req.body.Event;
-        
+
         if (Event === 'code-tyro') {
-            // let req_id = new coding1(req.body);
-            // let code=await req_id.save();
-            // res.redirect('/code1uid');
+            let v1 = req.body
             try {
-                const {gid1, gid2, phone} = req.body;
-                
-               const a = await coding1.find().sort(_id);
-                var arr=[];
-               for(var i=0;i<coding1.findone().sort(-_id);i++){
-                arr[i]=a.arr.map(coding1.findOne({gid1:i+1}));
-               }
-               for(var i=0;i<coding1.findone().sort(-_id);i++){
-                res.json(a[i]);
-               }
-                
-            } catch (error) {
-                res.json(err)
+                const data = await coding1.find({},{gid2:1});
+                const gidarr = data.map(item=>item.gid2);
+                console.log(gidarr);
+                let isGID = false;
+                for (const gid of gidarr){
+                    console.log(gid)
+                    if(gid===v1.gid1||gid===v1.gid2){
+                        isGID=true;
+                        console.log(gid);
+                        console.log(isGID);
+                        break;
+                    }
+                }
+                if(!isGID){
+                    let req_id=new coding1(req.body);
+                    await req_id.save();
+                    res.redirect('/code1uid');
+                }else{
+                    res.json('GID already exists');
+                }
+            }catch (error) {
+                res.json({error});
             }
-            
-            // if(val1.gid2===gid2 && val2.gid1===gid1){
-            //     res.json('gid already exists');
-            // }else{
-            //     let req_id = new coding1(req.body);
-            //     let code=await req_id.save();
-            //     res.redirect('/code1uid');
-            // }
         }else if(Event==='clash-o-coders'){
             try {
                 const gid1 = req.body.gid1;
