@@ -77,15 +77,15 @@ app.post('/event', async (req, res) => {
         const Event = req.body.Event;
 
         if (Event === 'code-tyro') {
-            let v1 = req.body
-            try {
-                const data = await coding1.find({},{gid2:1});
-                const gidarr = data.map(item=>item.gid2);
+           try {
+                const data = await coding1.find({});
+                
+                const gidarr = data.map(item=>[item.gid1,item.gid2]);
                 console.log(gidarr);
                 let isGID = false;
                 for (const gid of gidarr){
                     console.log(gid)
-                    if(gid===v1.gid1||gid===v1.gid2){
+                    if(gid.includes(req.body.gid1)||gid.includes(req.body.gid2)){
                         isGID=true;
                         console.log(gid);
                         console.log(isGID);
