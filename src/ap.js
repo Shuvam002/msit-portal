@@ -81,82 +81,150 @@ app.post('/event', async (req, res) => {
                 const data = await coding1.find({});
                 
                 const gidarr = data.map(item=>[item.gid1,item.gid2]);
-                console.log(gidarr);
-                let isGID = false;
+                
+                let isGID1 = false;
+                let isGID2 = false;
                 for (const gid of gidarr){
-                    console.log(gid)
-                    if(gid.includes(req.body.gid1)||gid.includes(req.body.gid2)){
-                        isGID=true;
-                        console.log(gid);
-                        console.log(isGID);
+                    
+                    if((gid[0]==req.body.gid1||gid[0]==req.body.gid2)&&(gid[1]==req.body.gid1||gid[1]==req.body.gid2)){
+                        isGID1=true;
+                        isGID2=true;
+                        break;
+                    }else if(gid[1]==req.body.gid1||gid[1]==req.body.gid2){
+                        isGID2=true;
+                        break;
+                    }else if(gid[0]==req.body.gid1||gid[0]==req.body.gid2){
+                        isGID1=true;
+                
                         break;
                     }
                 }
-                if(!isGID){
-                    let req_id=new coding1(req.body);
-                    await req_id.save();
-                    res.redirect('/code1uid');
+                if(isGID1&&isGID2){
+                    res.json("Both GIDs already exist");
+                }else if(isGID1){
+                    res.json("GID1 already exists");
+                }else if(isGID2){
+                    res.json("GID2 already exist")
                 }else{
-                    res.json('GID already exists');
+                    let req_id = new coding1(req.body);
+                    let code=await req_id.save();
+                    res.redirect('/code1uid');
                 }
             }catch (error) {
                 res.json({error});
             }
         }else if(Event==='clash-o-coders'){
             try {
-                const gid1 = req.body.gid1;
-                const gid2 = req.body.gid2;
-                const user1 = await coding3.findOne({gid1});
-                const user2 = await coding3.findOne({gid2});
-                if(user1){
-                    res.json('gid1 already exists')
-                }else if(user2){
-                    res.json('gid2 already exists')
+                const data = await coding3.find({});
+                
+                const gidarr = data.map(item=>[item.gid1,item.gid2]);
+                console.log(gidarr);
+                let isGID1 = false;
+                let isGID2 = false;
+                for (const gid of gidarr){
+                    
+                    if((gid[0]==req.body.gid1||gid[0]==req.body.gid2)&&(gid[1]==req.body.gid1||gid[1]==req.body.gid2)){
+                        isGID1=true;
+                        isGID2=true;
+                        break;
+                    }else if(gid[1]==req.body.gid1||gid[1]==req.body.gid2){
+                        isGID2=true;
+                        break;
+                    }else if(gid[0]==req.body.gid1||gid[0]==req.body.gid2){
+                        isGID1=true;
+                
+                        break;
+                    }
+                }
+                if(isGID1&&isGID2){
+                    res.json("Both GIDs already exist");
+                }else if(isGID1){
+                    res.json("GID1 already exists");
+                }else if(isGID2){
+                    res.json("GID2 already exist")
                 }else{
                     let req_id = new coding3(req.body);
                     let code=await req_id.save();
                     res.redirect('/code3uid');
                 }
-            } catch (error) {
-                res.json(err)
+            }catch (error) {
+                res.json({error});
             }
         }else if(Event==='code-hasher'){
             try {
-                const gid1 = req.body.gid1;
-                const gid2 = req.body.gid2;
-                const user1 = await coding2.findOne({gid1});
-                const user2 = await coding2.findOne({gid2});
-                if(user1){
-                    res.json('gid1 already exists')
-                }else if(user2){
-                    res.json('gid2 already exists')
+                const data = await coding2.find({});
+                
+                const gidarr = data.map(item=>[item.gid1,item.gid2]);
+                console.log(gidarr);
+                let isGID1 = false;
+                let isGID2 = false;
+                for (const gid of gidarr){
+                    
+                    if((gid[0]==req.body.gid1||gid[0]==req.body.gid2)&&(gid[1]==req.body.gid1||gid[1]==req.body.gid2)){
+                        isGID1=true;
+                        isGID2=true;
+                        break;
+                    }else if(gid[1]==req.body.gid1||gid[1]==req.body.gid2){
+                        isGID2=true;
+                        break;
+                    }else if(gid[0]==req.body.gid1||gid[0]==req.body.gid2){
+                        isGID1=true;
+                
+                        break;
+                    }
+                }
+                if(isGID1&&isGID2){
+                    res.json("Both GIDs already exist");
+                }else if(isGID1){
+                    res.json("GID1 already exists");
+                }else if(isGID2){
+                    res.json("GID2 already exist")
                 }else{
                     let req_id = new coding2(req.body);
                     let code=await req_id.save();
                     res.redirect('/code2uid');
                 }
-            } catch (error) {
-                res.json(err)
+            }catch (error) {
+                res.json({error});
             }
             
         }else if(Event==='webapi'){
            
             try {
-                const gid1 = req.body.gid1;
-                const gid2 = req.body.gid2;
-                const user1 = await coding4.findOne({gid1});
-                const user2 = await coding4.findOne({gid2});
-                if(user1){
-                    res.json('gid1 already exists')
-                }else if(user2){
-                    res.json('gid2 already exists')
+                const data = await coding4.find({});
+                
+                const gidarr = data.map(item=>[item.gid1,item.gid2]);
+                console.log(gidarr);
+                let isGID1 = false;
+                let isGID2 = false;
+                for (const gid of gidarr){
+                    
+                    if((gid[0]==req.body.gid1||gid[0]==req.body.gid2)&&(gid[1]==req.body.gid1||gid[1]==req.body.gid2)){
+                        isGID1=true;
+                        isGID2=true;
+                        break;
+                    }else if(gid[1]==req.body.gid1||gid[1]==req.body.gid2){
+                        isGID2=true;
+                        break;
+                    }else if(gid[0]==req.body.gid1||gid[0]==req.body.gid2){
+                        isGID1=true;
+                
+                        break;
+                    }
+                }
+                if(isGID1&&isGID2){
+                    res.json("Both GIDs already exist");
+                }else if(isGID2){
+                    res.json("GID2 already exists");
+                }else if(isGID1){
+                    res.json("GID1 already exist")
                 }else{
                     let req_id = new coding4(req.body);
                     let code=await req_id.save();
                     res.redirect('/code4uid');
                 }
-            } catch (error) {
-                res.json(err)
+            }catch (error) {
+                res.json({error});
             }
            
         }else if(Event==='Setubandhan'){
