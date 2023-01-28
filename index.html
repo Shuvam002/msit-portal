@@ -1,25 +1,135 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <style>
+        /* Form Container */
+        h1 {
+            font-size: 2em;
+            font-weight: bold;
+            text-align: center;
+            margin: 1em 0;
+            color: #4CAF50;
+            text-shadow: 4px 4px 4px #d9edf7;
+        }
+
+        .form-container {
+            width: 50%;
+            margin: 0 auto;
+            text-align: left;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+        }
+
+        /* Form Inputs */
+        input[type="text"],
+        input[type="email"],
+        input[type="tel"] {
+            width: 100%;
+            padding: 12px 20px;
+            margin: 8px 0;
+            box-sizing: border-box;
+            border: 2px solid #ccc;
+            border-radius: 4px;
+        }
+
+        /* Form Inputs: Focus */
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        input[type="tel"]:focus {
+            border: 2px solid #555;
+        }
+
+        /* Form Inputs: Placeholder */
+        ::placeholder {
+            color: #aaa;
+        }
+
+        /* Form Label */
+        label {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        /* Form Submit Button */
+        input[type="submit"] {
+            width: 100%;
+            background-color: #4CAF50;
+            color: white;
+            padding: 14px 20px;
+            margin: 8px 0;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        /* Form Submit Button: Hover */
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+
+        /* Error Message */
+        #err_mail,
+        #err_phn {
+            display: none;
+        }
+    </style>
 </head>
+
 <body>
     <h1>Registration Form</h1>
-    <div class ="form-container">
-        <form action="#" method="post">
+    <div class="form-container">
+        <form action="#" method="post" onsubmit="validate()" name="form">
             <input type="text" name="fullname" placeholder="Enter your fullname">
-            <input type="email" name="email" placeholder="Enter your email">
-            <input type="tel" name="phone" placeholder="Enter your phone number">
+            <br><br>
+            <input type="email" name="email" placeholder="Enter your email" id="email">
+            <div id="err_mail" style="color: red;">Enter Valid Email</div>
+            <br><br>
+            <input type="tel" name="phone" placeholder="Enter your phone number" id="phone">
+            <div id="err_phn" style="color: red;">Enter Valid Phone Number</div>
+            <br><br>
             <input type="text" name="college" placeholder="Enter your college">
+            <br><br>
             <input type="text" name="Roll_No" placeholder="Enter your roll no.">
 
             <!-- <input type="password" name="password" placeholder="Enter your password"> -->
             <input type="submit" name="submit" value="Submit" id="submit">
-        
+
         </form>
     </div>
 </body>
+<script>
+    function validateForm() {
+        var email = document.forms["form"]["email"].value;
+        var phone = document.forms["form"]["phone"].value;
+        var mailformat = /^[a-zA-Z0-9.!#$%&'+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)$/;
+        var phoneformat = /^\+?([0-9]{2})\)?[-. ]?([0-9]{4})[-. ]?([0-9]{4})$/;
+        var email_validate, phone_validate;
+        if (email.match(mailformat)) {
+            document.getElementById("err_mail").style.display = 'none';
+            email_validate = true;
+        } else {
+            document.getElementById("err_mail").style.display = 'block';
+            document.myForm.email.focus();
+            email_validate = false;
+        }
+        if (phone.match(phoneformat)) {
+            document.getElementById("err_phn").style.display = 'none';
+            phone_validate = true;
+        } else {
+            document.getElementById("err_phn").style.display = 'block';
+            document.myForm.phone.focus();
+            phone_validate = false;
+        }
+        return (email_validate && phone_validate);
+
+    }
+
+</script>
+
 </html>
