@@ -10,6 +10,7 @@ const coding3 = require('./db/coding/coding3');
 const coding4 = require('./db/coding/coding4');
 const civil1 = require('./db/civil/civil1');
 const civil2 = require('./db/civil/civil2');
+const roborace1 = require('./db/robotics/roborace1');
 require('./db/conn')
 // const ejs = require('ejs');
 const app = express();
@@ -58,6 +59,9 @@ app.get('/civil1uid', async (req, res) => {
 })
 app.get('/civil2uid', async (req, res) => {
     civil2.findOne().sort('-createdAt').exec(function (err, post) { res.json("Your UID is: " + post._id) });
+})
+app.get('/roborace1uid', async (req, res) => {
+    roborace1.findOne().sort('-createdAt').exec(function (err, post) { res.json("Your UID is: " + post._id) });
 })
 app.get('/event', async (req, res) => {
     res.sendFile(main + '/event registration.html')
@@ -154,21 +158,15 @@ app.post('/event', async (req, res) => {
            
             try {
                 const gid1Exists = await coding4.findOne({
-                    $or: [{ gid1: req.body.gid1 }, { gid2: req.body.gid1 }]
+                    $or: [{ gid1: req.body.gid1 }]
                 });
-                const gid2Exists = await coding4.findOne({
-                    $or: [{ gid1: req.body.gid2 }, { gid2: req.body.gid2 }]
-                });
-                if (gid1Exists && gid2Exists) {
-                    res.json("Both GIDs already exist");
-                } else if (gid2Exists) {
-                    res.json("GID2 already exists");
-                } else if (gid1Exists) {
+                
+                if (gid1Exists) {
                     res.json("GID1 already exist");
                 } else {
                     let req_id = new coding4(req.body);
                     let code = await req_id.save();
-                    res.redirect("/code1uid");
+                    res.redirect("/code4uid");
                 }
 
             } catch (error) {
@@ -255,6 +253,45 @@ app.post('/event', async (req, res) => {
 
 
                         res.redirect("/civil2uid");
+                    }
+
+                }
+            } catch (error) {
+                res.json(error)
+            }
+        }else if(Event === 'roborace'){
+            try {
+                const gid1Exists = await roborace1.findOne({
+                    $or: [{ gid1: req.body.gid1 }, { gid2: req.body.gid1 }, { gid3: req.body.gid1 }, { gid4: req.body.gid1 }]
+                });
+                const gid2Exists = await roborace1.findOne({
+                    $or: [{ gid1: req.body.gid2 }, { gid2: req.body.gid2 }, { gid3: req.body.gid2 }, { gid4: req.body.gid2 }]
+                });
+                const gid3Exists = await roborace1.findOne({
+                    $or: [{ gid1: req.body.gid3 }, { gid2: req.body.gid3 }, { gid3: req.body.gid3 }, { gid4: req.body.gid3 }]
+                });
+                const gid4Exists = await roborace1.findOne({
+                    $or: [{ gid1: req.body.gid4 }, { gid2: req.body.gid4 }, { gid3: req.body.gid4 }, { gid4: req.body.gid4 }]
+                });
+                
+                if (gid1Exists && gid2Exists && gid3Exists && gid4Exists) {
+                    res.json("All GIDs already exist");
+                } else {
+                    let existingGIDs = [];
+                    if (gid1Exists) existingGIDs.push(req.body.gid1);
+                    if (gid2Exists) existingGIDs.push(req.body.gid2);
+                    if (gid3Exists) existingGIDs.push(req.body.gid3);
+                    if (gid4Exists) existingGIDs.push(req.body.gid4);
+                    
+
+                    if (existingGIDs.length > 0) {
+                        res.json(`GIDs ${existingGIDs.join(', ')} already exist`);
+                    } else {
+                        let req_id = new roborace1(req.body);
+                        let code = await req_id.save();
+
+
+                        res.redirect("/roborace1uid");
                     }
 
                 }
