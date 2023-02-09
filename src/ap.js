@@ -1,16 +1,16 @@
 const express = require('express');
 // const bodyP = require('body-parser');
 const path = require('path');
+const cors = require('cors');
 const bodyParser = require('body-parser');
 const port = 6969;
 const usercollection = require('./db/data')
-const coding1 = require('./db/coding/coding1');
+const coding1 = require('./db/coding/code-tyro');
 const coding2 = require('./db/coding/coding2');
 const coding3 = require('./db/coding/coding3');
 const coding4 = require('./db/coding/coding4');
 const civil1 = require('./db/civil/civil1');
 const civil2 = require('./db/civil/civil2');
-const roborace1 = require('./db/robotics/roborace1');
 require('./db/conn')
 // const ejs = require('ejs');
 const app = express();
@@ -26,11 +26,19 @@ app.use(bodyParser.urlencoded({
 
 app.use(express.json())
 let main = path.join(__dirname, "../");
-
+app.use(cors({
+    origin: ["http://localhost:6969/", "mongodb://localhost:27017/test2"],
+    methods: ["GET", "POST"]
+}));
+app.use(function (req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
+});
 // app.get('/',(req,res)=>{
 //     res.send('homepage');
 // })
-app.get('/', (req, res) => {
+app.get('/mrd.html', (req, res) => {
     res.sendFile(main + '/index.html')
 })
 
@@ -60,13 +68,10 @@ app.get('/civil1uid', async (req, res) => {
 app.get('/civil2uid', async (req, res) => {
     civil2.findOne().sort('-createdAt').exec(function (err, post) { res.json("Your UID is: " + post._id) });
 })
-app.get('/roborace1uid', async (req, res) => {
-    roborace1.findOne().sort('-createdAt').exec(function (err, post) { res.json("Your UID is: " + post._id) });
-})
-app.get('/event', async (req, res) => {
+app.get('/rd.html', async (req, res) => {
     res.sendFile(main + '/event registration.html')
 })
-app.post('/', async (req, res) => {
+app.post('/mrd.html', async (req, res) => {
     let req_user = new usercollection(req.body);
     req_user.save((err, item) => {
         const id = item._id;
@@ -76,12 +81,12 @@ app.post('/', async (req, res) => {
 
 
 })
-app.post('/event', async (req, res) => {
+app.post('/rd.html', async (req, res) => {
     try {
         const Event = req.body.Event;
 
         if (Event === 'code-tyro') {
-            
+
             try {
                 const gid1Exists = await coding1.findOne({
                     $or: [{ gid1: req.body.gid1 }, { gid2: req.body.gid1 }]
@@ -155,18 +160,24 @@ app.post('/event', async (req, res) => {
 
         } else if (Event === 'webapi') {
 
-           
+
             try {
                 const gid1Exists = await coding4.findOne({
-                    $or: [{ gid1: req.body.gid1 }]
+                    $or: [{ gid1: req.body.gid1 }, { gid2: req.body.gid1 }]
                 });
-                
-                if (gid1Exists) {
+                const gid2Exists = await coding4.findOne({
+                    $or: [{ gid1: req.body.gid2 }, { gid2: req.body.gid2 }]
+                });
+                if (gid1Exists && gid2Exists) {
+                    res.json("Both GIDs already exist");
+                } else if (gid2Exists) {
+                    res.json("GID2 already exists");
+                } else if (gid1Exists) {
                     res.json("GID1 already exist");
                 } else {
                     let req_id = new coding4(req.body);
                     let code = await req_id.save();
-                    res.redirect("/code4uid");
+                    res.redirect("/code1uid");
                 }
 
             } catch (error) {
@@ -217,6 +228,8 @@ app.post('/event', async (req, res) => {
             }
 
 
+
+
         }
         else if (Event === 'mega-arch') {
             try {
@@ -259,46 +272,7 @@ app.post('/event', async (req, res) => {
             } catch (error) {
                 res.json(error)
             }
-        }else if(Event === 'roborace'){
-            try {
-                const gid1Exists = await roborace1.findOne({
-                    $or: [{ gid1: req.body.gid1 }, { gid2: req.body.gid1 }, { gid3: req.body.gid1 }, { gid4: req.body.gid1 }]
-                });
-                const gid2Exists = await roborace1.findOne({
-                    $or: [{ gid1: req.body.gid2 }, { gid2: req.body.gid2 }, { gid3: req.body.gid2 }, { gid4: req.body.gid2 }]
-                });
-                const gid3Exists = await roborace1.findOne({
-                    $or: [{ gid1: req.body.gid3 }, { gid2: req.body.gid3 }, { gid3: req.body.gid3 }, { gid4: req.body.gid3 }]
-                });
-                const gid4Exists = await roborace1.findOne({
-                    $or: [{ gid1: req.body.gid4 }, { gid2: req.body.gid4 }, { gid3: req.body.gid4 }, { gid4: req.body.gid4 }]
-                });
-                
-                if (gid1Exists && gid2Exists && gid3Exists && gid4Exists) {
-                    res.json("All GIDs already exist");
-                } else {
-                    let existingGIDs = [];
-                    if (gid1Exists) existingGIDs.push(req.body.gid1);
-                    if (gid2Exists) existingGIDs.push(req.body.gid2);
-                    if (gid3Exists) existingGIDs.push(req.body.gid3);
-                    if (gid4Exists) existingGIDs.push(req.body.gid4);
-                    
-
-                    if (existingGIDs.length > 0) {
-                        res.json(`GIDs ${existingGIDs.join(', ')} already exist`);
-                    } else {
-                        let req_id = new roborace1(req.body);
-                        let code = await req_id.save();
-
-
-                        res.redirect("/roborace1uid");
-                    }
-
-                }
-            } catch (error) {
-                res.json(error)
-            }
-        }else {
+        } else {
             res.json("Couldn't add");
         }
     } catch (error) {
@@ -311,7 +285,46 @@ app.post('/event', async (req, res) => {
     //     res.redirect('/uid');
     // });
 })
+app.get('/crd.html', (req, res) => {
+    res.sendFile(main + '/crd.html');
+    var event = req.params.Event;
+    try {
 
+        if (event === 'code-tyro') {
+
+            try {
+                coding1.find().sort('-createdAt').exec(function (err, post) { res.write(post._id) });
+
+            } catch (error) {
+                res.json({ error });
+            }
+
+
+        }
+    } catch (error) {
+        res.status(400).json({ error });
+    }
+})
+app.post('/crd.html', async (req, res) => {
+
+    try {
+        const Event = req.body.Event;
+
+        if (Event === 'code-tyro') {
+
+            try {
+                coding1.find().sort('-createdAt').exec(function (err, post) { res.write(post._id) });
+
+            } catch (error) {
+                res.json({ error });
+            }
+
+
+        }
+    } catch (error) {
+        res.status(400).json({ error });
+    }
+})
 app.listen(port, () => {
     console.log('connected');
 });
