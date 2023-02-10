@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <br>
+    <div class="container">
+        <h1>Event Registration
+        </h1>
+        <hr>
+        <form action="/crd.html" method="post">
+            <div class="row">
+                <div class="col">
+                    Enter domain:
+                    <select class="form-control" name="inputType" id="inputType"
+                        onchange="even('inputType','inputType2')">
+                        <option value=" "></option>
+                        <option value="civil">CIVIL</option>
+                        <option value="electrical">ELECTRICAL</option>
+                        <option value="gaming">GAMING</option>
+                        <option value="coding">CODING</option>
+                        <option value="robotics">ROBOTICS</option>
+                    </select>
+
+                    <br>
+                    <br>
+                    Enter event:
+                    <select class="form-control" name="Event" id="inputType2" onchange="plot('inputType2')">
+
+                    </select>
+                    <br>
+                    <br>
+                    <input type="submit" value="submit">
+                    <div id="div"></div>
+                </div>
+
+            </div>
+        </form>
+    </div>
+</body>
+<script>
+    function even(s1, s2) {
+        var s1 = document.getElementById(s1);
+        var s2 = document.getElementById(s2);
+
+        if (s1.value === "civil") {
+            var optionarray = [' | ', 'Setubandhan|setubandhan', "mega-arch|Mega-Arch"]
+        }
+        else if (s1.value === "electrical") {
+            var optionarray = [' | ', 'elemain|eleMain', 'eleonspot|eleOnSpot']
+        }
+        else if (s1.value === "gaming") {
+            var optionarray = [' | ', 'game-Main1|game-main1', 'game-Main2|game-main2', 'game-Main3|game-main3', 'game-onspot|game-onspot']
+        }
+        else if (s1.value === "coding") {
+            var optionarray = [' | ', 'code-tyro|code-Tyro', 'code-hasher|code-Hasher', 'clash-o-coders|Clash-O-Coders', 'webapi|WebAPi']
+        }
+        else if (s1.value === "robotics") {
+            var optionarray = [' | ', 'roborace|Robo-race', 'robomaze|RoboMaze', 'roborace-onspot|RoboRace-onspot', 'robowar|Robo-War', 'robosoccer|Robo-Soccer']
+        }
+        for (var option in optionarray) {
+            var pair = optionarray[option].split("|");
+            var newoption = document.createElement("option");
+            newoption.value = pair[0];
+            newoption.innerHTML = pair[1];
+            s2.options.add(newoption);
+        }
+    }
+    
+
+            $.ajax({
+                type: "POST",
+                url: "/get_events",
+                data: { domain: selectedDomain },
+                success: function (response) {
+                    
+                    $('#inputType2').empty();
+                    for (var i = 0; i < response.length; i++) {
+                        $('#inputType2').append($('<option>', {
+                            value: response[i].value,
+                            text: response[i].text
+                        }));
+                    }
+                }
+            });
+     
+
+        $('#inputType2').change(function () {
+            var selectedEvent = $(this).val();
+
+            $.ajax({
+                type: "POST",
+                url: "/get_event_details",
+                data: { event: selectedEvent },
+                success: function (response) {
+                    // Handle the response from the server
+                    $('#div').text(response.details);
+                }
+            });
+        });
+  
+</script>
+<script>
+
+
+</script>
+
+</html>
