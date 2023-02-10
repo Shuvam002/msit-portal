@@ -14,7 +14,7 @@
         <h1>Event Registration
         </h1>
         <hr>
-        <form action="/crd.html" method="post">
+        <form action="\crd.html" method="post">
             <div class="row">
                 <div class="col">
                     Enter domain:
@@ -72,39 +72,40 @@
             s2.options.add(newoption);
         }
     }
-    
+    $('#inputType').change(function () {
+        var selectedDomain = $(this).val();
 
-            $.ajax({
-                type: "POST",
-                url: "/get_events",
-                data: { domain: selectedDomain },
-                success: function (response) {
-                    
-                    $('#inputType2').empty();
-                    for (var i = 0; i < response.length; i++) {
-                        $('#inputType2').append($('<option>', {
-                            value: response[i].value,
-                            text: response[i].text
-                        }));
-                    }
+        $.ajax({
+            type: "POST",
+            url: "/crd.html",
+            data: { domain: selectedDomain },
+            success: function (response) {
+
+                $('#inputType2').empty();
+                for (var i = 0; i < response.length; i++) {
+                    $('#inputType2').append($('<option>', {
+                        value: response[i].value,
+                        text: response[i].text
+                    }));
                 }
-            });
-     
-
-        $('#inputType2').change(function () {
-            var selectedEvent = $(this).val();
-
-            $.ajax({
-                type: "POST",
-                url: "/get_event_details",
-                data: { event: selectedEvent },
-                success: function (response) {
-                    // Handle the response from the server
-                    $('#div').text(response.details);
-                }
-            });
+            }
         });
-  
+    });
+
+    $('#inputType2').change(function () {
+        var selectedEvent = $(this).val();
+
+        $.ajax({
+            type: "POST",
+            url: "/crd.html",
+            data: { event: selectedEvent },
+            success: function (response) {
+                // Handle the response from the server
+                $('#div').text(response.details);
+            }
+        });
+    });
+
 </script>
 <script>
 
